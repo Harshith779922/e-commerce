@@ -15,6 +15,7 @@ function getPrismaClient(): PrismaClient {
 
 export const prisma = new Proxy({} as PrismaClient, {
   get(_target, prop) {
+    if (prop === 'then') return undefined;
     const client = getPrismaClient();
     const value = (client as any)[prop];
     if (typeof value === 'function') {

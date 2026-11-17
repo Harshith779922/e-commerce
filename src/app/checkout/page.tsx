@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
+import { useSettings } from '@/context/SettingsContext';
 import { formatINR } from '@/lib/utils';
 import {
   ShieldCheck,
@@ -32,6 +33,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { items, subtotal, discount, shipping, total, coupon, clearCart } = useCart();
   const { user } = useAuth();
+  const { settings } = useSettings();
 
   // Current step (1: Info & Address, 2: Shipping, 3: Payment)
   const [currentStep, setCurrentStep] = useState(1);
@@ -206,7 +208,7 @@ export default function CheckoutPage() {
         <div className="mb-10 text-center max-w-2xl mx-auto">
           <Link href="/" className="inline-block mb-3">
             <span className="font-serif text-2xl tracking-[0.25em] text-[#F5F0E8] uppercase">
-              BESPOKE MILANO
+              {settings.brandName}
             </span>
           </Link>
           <div className="flex items-center justify-center gap-2 text-xs uppercase tracking-widest text-[#A8A29A]">

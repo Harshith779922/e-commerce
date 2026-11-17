@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import { useSettings } from '@/context/SettingsContext';
 import { formatINR } from '@/lib/utils';
 import { X, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Tag, Sparkles } from 'lucide-react';
 
@@ -22,37 +23,27 @@ export default function CartDrawer() {
     applyCoupon,
     removeCoupon,
   } = useCart();
+  const { settings } = useSettings();
 
   const [couponInput, setCouponInput] = useState('');
   const [isApplying, setIsApplying] = useState(false);
 
-  // Lock body scroll when cart is open
+  // Lock body scroll cleanly when cart is open without layout jumping
   useEffect(() => {
     if (isOpen) {
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     } else {
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
       document.body.style.overflow = '';
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
+      document.documentElement.style.overflow = '';
     }
     return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
   }, [isOpen]);
 
-  const freeShippingThreshold = 4999;
+  const freeShippingThreshold = settings?.freeShippingThreshold || 4999;
   const progressToFreeShipping = Math.min(100, (subtotal / freeShippingThreshold) * 100);
   const remainingForFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
 
@@ -67,7 +58,7 @@ export default function CartDrawer() {
   return (
     <div
       className={`fixed inset-0 z-50 overflow-hidden transition-all duration-300 ${
-        isOpen ? 'pointer-events-auto visible' : 'pointer-events-none invisible'
+        isOpen ? 'pointer-events-auto visible' : 'pointer-events-none invisible delay-300'
       }`}
       aria-hidden={!isOpen}
     >
@@ -81,7 +72,7 @@ export default function CartDrawer() {
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
         <div
-          className={`w-screen max-w-md bg-[#0E0E0E] border-l border-[#34312D] text-[#F5F2EC] flex flex-col shadow-2xl drawer-right transform ${
+          className={`w-screen max-w-md h-full max-h-[100dvh] bg-[#0E0E0E] border-l border-[#34312D] text-[#F5F2EC] flex flex-col shadow-2xl drawer-right transform ${
             isOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
@@ -123,7 +114,7 @@ export default function CartDrawer() {
           </div>
 
           {/* Cart Item List */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-5">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 scroll-touch-contain">
             {items.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center py-16">
                 <div className="w-16 h-16 rounded-full border border-[#34312D] flex items-center justify-center mb-4 text-[#A8A29A]">

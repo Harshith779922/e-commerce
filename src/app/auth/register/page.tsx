@@ -4,11 +4,13 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import { useSettings } from '@/context/SettingsContext';
 import { Lock, Mail, User, Phone, ArrowRight } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
   const { register } = useAuth();
+  const { settings } = useSettings();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -37,7 +39,7 @@ export default function RegisterPage() {
         <div className="text-center space-y-2">
           <Link href="/" className="inline-block">
             <span className="font-serif text-2xl tracking-[0.25em] text-[#F5F0E8] uppercase">
-              BESPOKE MILANO
+              {settings.brandName}
             </span>
             <span className="block text-[9px] tracking-[0.4em] text-[#C5A46D] uppercase mt-0.5">
               Client Privilege Registry

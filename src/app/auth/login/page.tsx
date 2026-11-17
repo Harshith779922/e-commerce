@@ -4,11 +4,13 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import { useSettings } from '@/context/SettingsContext';
 import { Lock, Mail, ArrowRight, ShieldCheck, UserCheck } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
   const { login, quickLoginAsAdmin, quickLoginAsCustomer, user } = useAuth();
+  const { settings } = useSettings();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -49,7 +51,7 @@ export default function LoginPage() {
         <div className="text-center space-y-2">
           <Link href="/" className="inline-block">
             <span className="font-serif text-2xl tracking-[0.25em] text-[#F5F0E8] uppercase">
-              BESPOKE MILANO
+              {settings.brandName}
             </span>
             <span className="block text-[9px] tracking-[0.4em] text-[#C5A46D] uppercase mt-0.5">
               Client Portal

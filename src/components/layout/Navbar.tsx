@@ -44,29 +44,18 @@ export default function Navbar() {
     setAccountDropdownOpen(false);
   }, [pathname]);
 
-  // Lock body scroll when mobile menu is open
+  // Lock body scroll cleanly when mobile menu is open without layout jumping
   useEffect(() => {
     if (mobileMenuOpen) {
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     } else {
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
       document.body.style.overflow = '';
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
+      document.documentElement.style.overflow = '';
     }
     return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
   }, [mobileMenuOpen]);
 
@@ -412,7 +401,7 @@ export default function Navbar() {
         {/* Mobile Navigation Drawer with Hardware-Accelerated Smooth Slide */}
         <div
           className={`fixed inset-0 z-50 lg:hidden transition-all duration-300 ${
-            mobileMenuOpen ? 'pointer-events-auto visible' : 'pointer-events-none invisible'
+            mobileMenuOpen ? 'pointer-events-auto visible' : 'pointer-events-none invisible delay-300'
           }`}
           aria-hidden={!mobileMenuOpen}
         >
@@ -423,7 +412,7 @@ export default function Navbar() {
             onClick={() => setMobileMenuOpen(false)}
           />
           <div
-            className={`fixed top-0 bottom-0 left-0 w-[86vw] max-w-sm bg-[#0E0E0E] border-r border-[#262626] flex flex-col justify-between shadow-2xl z-10 overflow-hidden drawer-left transform ${
+            className={`fixed top-0 bottom-0 left-0 w-[86vw] max-w-sm h-full max-h-[100dvh] bg-[#0E0E0E] border-r border-[#262626] flex flex-col justify-between shadow-2xl z-10 overflow-hidden drawer-left transform ${
               mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
             }`}
           >

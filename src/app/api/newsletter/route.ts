@@ -18,8 +18,10 @@ export async function POST(req: Request) {
       where: { email: normalized },
     });
 
+    const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || 'EXAMPLE E-COM';
+
     if (existing) {
-      return NextResponse.json({ success: true, message: 'You are already subscribed to the Bespoke Milano Gazette.' });
+      return NextResponse.json({ success: true, message: `You are already subscribed to the ${brandName} Gazette.` });
     }
 
     await prisma.newsletterSubscriber.create({
@@ -28,7 +30,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Welcome to the world of Bespoke Milano. Your private invitation code MILANO10 has been unlocked.',
+      message: `Welcome to the world of ${brandName}. Your private invitation code MILANO10 has been unlocked.`,
     });
   } catch (error: any) {
     console.error('Newsletter error:', error);
