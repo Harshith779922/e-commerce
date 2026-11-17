@@ -11,18 +11,18 @@ export default function AnnouncementBar() {
   if (!settings.announcementEnabled || dismissed) return null;
 
   return (
-    <div className="relative bg-[#0E0E0E] text-[#F5F0E8] border-b border-[#34312D] py-2 px-4 text-xs tracking-widestLuxury text-center z-50 transition-all duration-300">
+    <div className="relative bg-[#101010] text-[#F2EEE5] border-b border-[#241C1C] py-2 px-4 text-xs tracking-widestLuxury text-center z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto flex items-center justify-center gap-3">
-        <Sparkles className="w-3 h-3 text-[#C5A46D] hidden sm:inline-block animate-pulse" />
-        <span className="font-medium uppercase text-[11px] sm:text-xs">
+        <Sparkles className="w-3 h-3 text-[#B69A63] hidden sm:inline-block animate-pulse" />
+        <span className="font-medium uppercase text-[10px] sm:text-[11px] text-[#F2EEE5]/90">
           {settings.announcementText}
         </span>
-        <Sparkles className="w-3 h-3 text-[#C5A46D] hidden sm:inline-block animate-pulse" />
+        <Sparkles className="w-3 h-3 text-[#B69A63] hidden sm:inline-block animate-pulse" />
       </div>
       <button
         onClick={() => setDismissed(true)}
         aria-label="Dismiss announcement"
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A8A29A] hover:text-[#C5A46D] transition-colors p-1"
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#85817B] hover:text-[#B69A63] transition-colors p-1"
       >
         <X className="w-3.5 h-3.5" />
       </button>

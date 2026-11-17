@@ -16,16 +16,16 @@ export interface StoreSettings {
 }
 
 const defaultSettings: StoreSettings = {
-  brandName: 'EXAMPLE E-COM',
-  brandLocation: 'ATELIER',
-  announcementText: 'COMPLIMENTARY SHIPPING ON ORDERS ABOVE ₹4,999',
+  brandName: 'ELYON LECLAIR',
+  brandLocation: 'MAISON DE HAUTE COUTURE',
+  announcementText: 'COMPLIMENTARY WHITE-GLOVE DELIVERY ON ORDERS ABOVE ₹4,999',
   announcementEnabled: true,
   currencySymbol: '₹',
   freeShippingThreshold: 4999,
-  contactEmail: 'concierge@example-ecom.com',
+  contactEmail: 'concierge@elyonleclair.com',
   contactPhone: '+91 98201 12345',
-  socialInstagram: 'https://instagram.com/example_ecom',
-  socialFacebook: 'https://facebook.com/example_ecom',
+  socialInstagram: 'https://instagram.com/elyonleclair',
+  socialFacebook: 'https://facebook.com/elyonleclair',
 };
 
 interface SettingsContextType {

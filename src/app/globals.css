@@ -3,15 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --color-obsidian: #111111;
-  --color-gold: #B89A6A;
-  --color-gold-hover: #CDB388;
-  --color-ivory: #F5F2EC;
-  --color-stone: #EAE5DC;
-  --color-charcoal: #242321;
-  --color-muted: #85817A;
-  --color-border: #DED9D0;
-  --color-border-dark: #2B2A27;
+  --color-obsidian: #101010;
+  --color-cherry: #241C1C;
+  --color-bordeaux: #4B171C;
+  --color-gold: #B69A63;
+  --color-ivory: #F2EEE5;
+  --color-silver: #85817B;
+  --color-border: #2A2424;
 }
 
 @layer base {
@@ -23,9 +21,9 @@
   }
 
   body {
-    background-color: var(--color-obsidian);
-    color: #F5F2EC;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #101010;
+    color: #F2EEE5;
+    font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow-x: hidden;
     letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
@@ -34,9 +32,13 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
-    letter-spacing: 0.03em;
+    font-family: 'Bodoni Moda', 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: 0.02em;
   }
+}
+
+.bg-radial-vignette {
+  background: radial-gradient(circle at center, transparent 0%, rgba(16, 16, 16, 0.85) 100%);
 }
 
 /* Safe area insets for modern mobile devices */

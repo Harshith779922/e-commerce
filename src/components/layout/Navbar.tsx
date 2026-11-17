@@ -9,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useSettings } from '@/context/SettingsContext';
 import { Search, ShoppingBag, Heart, User, Menu, X, ChevronDown, ShieldCheck } from 'lucide-react';
 import SearchModal from './SearchModal';
+import ELMonogram from '@/components/common/ELMonogram';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -83,10 +84,11 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* Brand Logo / Wordmark (Original letter spacing and typography) */}
+            {/* Brand Logo / Wordmark with Custom EL Monogram */}
             <div className="flex-1 lg:flex-none text-center lg:text-left">
-              <Link href="/" className="inline-block group py-1">
-                <span className="font-serif text-lg sm:text-xl md:text-2xl tracking-[0.22em] text-[#F5F2EC] group-hover:text-[#B89A6A] transition-colors uppercase font-light">
+              <Link href="/" className="inline-flex items-center gap-2.5 group py-1">
+                <ELMonogram className="w-5 h-5 sm:w-6 sm:h-6 text-[#B69A63] group-hover:scale-105 transition-transform" variant="minimal" />
+                <span className="font-serif text-lg sm:text-xl md:text-2xl tracking-[0.25em] text-[#F2EEE5] group-hover:text-[#B69A63] transition-colors uppercase font-light">
                   {settings.brandName}
                 </span>
               </Link>
@@ -94,14 +96,14 @@ export default function Navbar() {
 
             {/* Desktop Navigation Links */}
             <nav className="hidden lg:flex items-center space-x-7 text-xs tracking-widestLuxury uppercase font-medium">
-              {/* Home */}
+              {/* The Maison */}
               <Link
-                href="/"
-                className={`hover:text-[#B89A6A] transition-colors ${
-                  pathname === '/' ? 'text-[#B89A6A]' : 'text-[#F5F2EC]'
+                href="/maison"
+                className={`hover:text-[#B69A63] transition-colors ${
+                  pathname === '/maison' ? 'text-[#B69A63]' : 'text-[#F2EEE5]'
                 }`}
               >
-                Home
+                The Maison
               </Link>
 
               {/* Men with Mega Menu */}
@@ -418,15 +420,16 @@ export default function Navbar() {
           >
             {/* Drawer Top Header */}
             <div className="p-4 sm:p-5 border-b border-[#262626] flex items-center justify-between bg-[#121212]">
-              <Link href="/" onClick={() => setMobileMenuOpen(false)} className="inline-block">
-                <span className="font-serif text-lg tracking-[0.2em] text-[#F5F2EC] uppercase font-light">
+              <Link href="/" onClick={() => setMobileMenuOpen(false)} className="inline-flex items-center gap-2">
+                <ELMonogram className="w-5 h-5 text-[#B69A63]" variant="minimal" />
+                <span className="font-serif text-lg tracking-[0.2em] text-[#F2EEE5] uppercase font-light">
                   {settings.brandName}
                 </span>
               </Link>
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 aria-label="Close menu"
-                className="p-1.5 text-[#85817A] hover:text-[#B89A6A] hover:bg-[#1A1A1A] transition-colors rounded-none"
+                className="p-1.5 text-[#85817A] hover:text-[#B69A63] hover:bg-[#1A1A1A] transition-colors rounded-none"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -453,10 +456,21 @@ export default function Navbar() {
                   href="/"
                   onClick={() => setMobileMenuOpen(false)}
                   className={`block py-3 text-xs tracking-widestLuxury uppercase font-medium border-b border-[#1A1A1A] transition-colors ${
-                    pathname === '/' ? 'text-[#B89A6A]' : 'text-[#F5F2EC] hover:text-[#B89A6A]'
+                    pathname === '/' ? 'text-[#B69A63]' : 'text-[#F2EEE5] hover:text-[#B69A63]'
                   }`}
                 >
                   Home
+                </Link>
+
+                {/* The Maison */}
+                <Link
+                  href="/maison"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`block py-3 text-xs tracking-widestLuxury uppercase font-medium border-b border-[#1A1A1A] transition-colors ${
+                    pathname === '/maison' ? 'text-[#B69A63]' : 'text-[#F2EEE5] hover:text-[#B69A63]'
+                  }`}
+                >
+                  The Maison
                 </Link>
 
                 {/* Men Accordion */}

@@ -64,9 +64,8 @@ export default function CartDrawer() {
     >
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/85 backdrop-blur-md drawer-backdrop ${
-          isOpen ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`fixed inset-0 bg-black/85 backdrop-blur-md drawer-backdrop ${isOpen ? 'opacity-100' : 'opacity-0'
+          }`}
         onClick={closeCart}
       />
 

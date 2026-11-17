@@ -1,18 +1,17 @@
 import prisma from '@/lib/prisma';
-import HeroSection from '@/components/home/HeroSection';
-import BrandBenefits from '@/components/home/BrandBenefits';
-import ShopByCategory from '@/components/home/ShopByCategory';
-import NewArrivals from '@/components/home/NewArrivals';
-import FeaturedCollectionBanner from '@/components/home/FeaturedCollectionBanner';
-import BestSellers from '@/components/home/BestSellers';
-import EditorialSection from '@/components/home/EditorialSection';
-import NewsletterSection from '@/components/home/NewsletterSection';
+import MaisonEntrance from '@/components/home/MaisonEntrance';
+import MaisonIdentity from '@/components/home/MaisonIdentity';
+import CollectionGallery from '@/components/home/CollectionGallery';
+import TheBoutique from '@/components/home/TheBoutique';
+import ArtOfDetail from '@/components/home/ArtOfDetail';
+import TheCampaign from '@/components/home/TheCampaign';
+import TheJournal from '@/components/home/TheJournal';
 import { Product } from '@/lib/types';
 
-export const revalidate = 0; // Fresh data for demo
+export const revalidate = 0; // Fresh dynamic data
 
 export default async function HomePage() {
-  // Fetch active products with relations
+  // Fetch active products with relations for the boutique
   const products = (await prisma.product.findMany({
     where: { isActive: true },
     orderBy: { createdAt: 'desc' },
@@ -25,31 +24,29 @@ export default async function HomePage() {
   })) as unknown as Product[];
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0B0B0B] text-[#F5F0E8]">
-      {/* 1. Hero Section — The Italian Collection Carousel */}
-      <HeroSection />
+    <div className="flex flex-col min-h-screen bg-[#101010] text-[#F2EEE5] selection:bg-[#4B171C] selection:text-[#F2EEE5]">
+      {/* Chapter 1 — The Entrance & Hero */}
+      <MaisonEntrance />
 
-      {/* 2. Brand Benefits Section */}
-      <BrandBenefits />
+      {/* Chapter 2 — The Identity */}
+      <MaisonIdentity />
 
-      {/* 3. Shop by Category */}
-      <ShopByCategory />
+      {/* Chapter 3 — The Collection Gallery */}
+      <CollectionGallery />
 
-      {/* 4. New Arrivals Showcase (5 items) */}
-      <NewArrivals products={products} />
+      {/* Chapter 4 — The Boutique */}
+      <TheBoutique products={products} />
 
-      {/* 5. Featured Collection Banner — The Dolce Collection */}
-      <FeaturedCollectionBanner />
+      {/* Chapter 5 — The Art of Detail */}
+      <ArtOfDetail />
 
-      {/* 6. Best Sellers Showcase */}
-      <BestSellers products={products} />
+      {/* Chapter 6 — The Campaign */}
+      <TheCampaign />
 
-      {/* 7. Magazine-Inspired Editorial Section — The Art of Dressing */}
-      <EditorialSection />
+      {/* Chapter 7 — The Journal */}
+      <TheJournal />
 
-      {/* 8. Newsletter Section */}
-      <NewsletterSection />
+      {/* Chapter 8 — The Signature is rendered in RootLayout as Footer */}
     </div>
   );
 }
-
