@@ -33,6 +33,32 @@ function ShopContent() {
     if (searchParams.get('newArrival')) setOnlyNewArrivals(searchParams.get('newArrival') === 'true');
   }, [searchParams]);
 
+  // Lock body scroll when mobile filter drawer is open
+  useEffect(() => {
+    if (mobileFilterOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+    };
+  }, [mobileFilterOpen]);
+
   // Fetch Categories & Collections
   useEffect(() => {
     async function loadMeta() {
@@ -376,45 +402,63 @@ function ShopContent() {
         </div>
       </div>
 
-      {/* Mobile Filters Drawer */}
-      {mobileFilterOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
+      {/* Mobile Filters Drawer with Smooth Hardware-Accelerated Slide */}
+      <div
+        className={`fixed inset-0 z-50 lg:hidden transition-all duration-300 ${
+          mobileFilterOpen ? 'pointer-events-auto visible' : 'pointer-events-none invisible'
+        }`}
+        aria-hidden={!mobileFilterOpen}
+      >
+        <div
+          className={`fixed inset-0 bg-black/85 backdrop-blur-md drawer-backdrop ${
+            mobileFilterOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={() => setMobileFilterOpen(false)}
+        />
+        <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
           <div
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
-            onClick={() => setMobileFilterOpen(false)}
-          />
-          <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-            <div className="w-screen max-w-xs bg-[#0E0E0E] border-l border-[#34312D] p-6 text-[#F5F0E8] overflow-y-auto space-y-6">
-              <div className="flex items-center justify-between border-b border-[#262626] pb-4">
-                <h3 className="font-serif text-lg tracking-widest uppercase">Filter Boutique</h3>
-                <button
-                  onClick={() => setMobileFilterOpen(false)}
-                  className="text-[#A8A29A] hover:text-[#C5A46D]"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
+            className={`w-screen max-w-xs bg-[#0E0E0E] border-l border-[#34312D] p-5 sm:p-6 text-[#F5F2EC] overflow-y-auto space-y-6 drawer-right scroll-touch-contain transform ${
+              mobileFilterOpen ? 'translate-x-0' : 'translate-x-full'
+            }`}
+          >
+            <div className="flex items-center justify-between border-b border-[#262626] pb-4">
+              <h3 className="font-serif text-lg tracking-widest uppercase">Filter Boutique</h3>
+              <button
+                onClick={() => setMobileFilterOpen(false)}
+                className="text-[#85817A] hover:text-[#B89A6A] p-1"
+                aria-label="Close filters"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-              {/* Gender */}
-              <div>
-                <h4 className="text-xs text-[#C5A46D] uppercase tracking-widest font-mono mb-2">Gender</h4>
+            {/* Gender */}
+            <div>
+              <h4 className="text-xs text-[#B89A6A] uppercase tracking-widest font-mono mb-2">Gender</h4>
+              <div className="space-y-1">
                 {['ALL', 'MEN', 'WOMEN'].map((g) => (
                   <button
                     key={g}
                     onClick={() => { setSelectedGender(g); setMobileFilterOpen(false); }}
-                    className={`block w-full text-left py-1 text-xs ${selectedGender === g ? 'text-[#C5A46D] font-bold' : 'text-[#A8A29A]'}`}
+                    className={`block w-full text-left py-1.5 text-xs transition-colors ${
+                      selectedGender === g ? 'text-[#B89A6A] font-semibold' : 'text-[#85817A] hover:text-[#F5F2EC]'
+                    }`}
                   >
-                    {g === 'ALL' ? 'All' : g}
+                    {g === 'ALL' ? 'All Genders' : g}
                   </button>
                 ))}
               </div>
+            </div>
 
-              {/* Categories */}
-              <div>
-                <h4 className="text-xs text-[#C5A46D] uppercase tracking-widest font-mono mb-2">Categories</h4>
+            {/* Categories */}
+            <div>
+              <h4 className="text-xs text-[#B89A6A] uppercase tracking-widest font-mono mb-2">Categories</h4>
+              <div className="space-y-1">
                 <button
                   onClick={() => { setSelectedCategory('ALL'); setMobileFilterOpen(false); }}
-                  className={`block w-full text-left py-1 text-xs ${selectedCategory === 'ALL' ? 'text-[#C5A46D] font-bold' : 'text-[#A8A29A]'}`}
+                  className={`block w-full text-left py-1.5 text-xs transition-colors ${
+                    selectedCategory === 'ALL' ? 'text-[#B89A6A] font-semibold' : 'text-[#85817A] hover:text-[#F5F2EC]'
+                  }`}
                 >
                   All Categories
                 </button>
@@ -422,31 +466,33 @@ function ShopContent() {
                   <button
                     key={c.id}
                     onClick={() => { setSelectedCategory(c.slug); setMobileFilterOpen(false); }}
-                    className={`block w-full text-left py-1 text-xs ${selectedCategory === c.slug ? 'text-[#C5A46D] font-bold' : 'text-[#A8A29A]'}`}
+                    className={`block w-full text-left py-1.5 text-xs transition-colors ${
+                      selectedCategory === c.slug ? 'text-[#B89A6A] font-semibold' : 'text-[#85817A] hover:text-[#F5F2EC]'
+                    }`}
                   >
                     {c.name}
                   </button>
                 ))}
               </div>
+            </div>
 
-              <div className="pt-4 border-t border-[#262626] space-y-2">
-                <button
-                  onClick={() => { clearAllFilters(); setMobileFilterOpen(false); }}
-                  className="w-full py-2.5 border border-[#34312D] text-xs uppercase tracking-widest text-[#A8A29A]"
-                >
-                  Clear Filters
-                </button>
-                <button
-                  onClick={() => setMobileFilterOpen(false)}
-                  className="w-full py-2.5 bg-[#C5A46D] text-black text-xs uppercase tracking-widest font-semibold"
-                >
-                  Apply Filters ({products.length})
-                </button>
-              </div>
+            <div className="pt-4 border-t border-[#262626] space-y-2 pb-safe">
+              <button
+                onClick={() => { clearAllFilters(); setMobileFilterOpen(false); }}
+                className="w-full py-2.5 border border-[#34312D] text-xs uppercase tracking-widest text-[#85817A] hover:text-[#F5F2EC] hover:border-[#B89A6A] transition-colors"
+              >
+                Clear Filters
+              </button>
+              <button
+                onClick={() => setMobileFilterOpen(false)}
+                className="w-full py-2.5 bg-gradient-to-r from-[#947A4F] via-[#B89A6A] to-[#CDB388] text-black text-xs uppercase tracking-widest font-semibold hover:brightness-110 transition-all shadow-luxury"
+              >
+                Apply Filters ({products.length})
+              </button>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

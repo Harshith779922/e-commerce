@@ -44,6 +44,32 @@ export default function Navbar() {
     setAccountDropdownOpen(false);
   }, [pathname]);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
   const isHome = pathname === '/';
 
   return (
@@ -383,46 +409,56 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div className="fixed inset-0 z-50 lg:hidden animate-fadeIn">
-            <div
-              className="fixed inset-0 bg-black/85 backdrop-blur-md transition-opacity duration-300"
-              onClick={() => setMobileMenuOpen(false)}
-            />
-            <div className="fixed top-0 bottom-0 left-0 w-[88vw] max-w-sm bg-[#0E0E0E] border-r border-[#262626] flex flex-col justify-between shadow-2xl z-10 overflow-hidden">
-              {/* Drawer Top Header */}
-              <div className="p-5 border-b border-[#262626] flex items-center justify-between bg-[#121212]">
-                <Link href="/" onClick={() => setMobileMenuOpen(false)} className="inline-block">
-                  <span className="font-serif text-lg tracking-[0.2em] text-[#F5F2EC] uppercase font-light">
-                    {settings.brandName}
-                  </span>
-                </Link>
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  aria-label="Close menu"
-                  className="p-1.5 text-[#85817A] hover:text-[#B89A6A] hover:bg-[#1A1A1A] transition-colors rounded-none"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
+        {/* Mobile Navigation Drawer with Hardware-Accelerated Smooth Slide */}
+        <div
+          className={`fixed inset-0 z-50 lg:hidden transition-all duration-300 ${
+            mobileMenuOpen ? 'pointer-events-auto visible' : 'pointer-events-none invisible'
+          }`}
+          aria-hidden={!mobileMenuOpen}
+        >
+          <div
+            className={`fixed inset-0 bg-black/85 backdrop-blur-md drawer-backdrop ${
+              mobileMenuOpen ? 'opacity-100' : 'opacity-0'
+            }`}
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div
+            className={`fixed top-0 bottom-0 left-0 w-[86vw] max-w-sm bg-[#0E0E0E] border-r border-[#262626] flex flex-col justify-between shadow-2xl z-10 overflow-hidden drawer-left transform ${
+              mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+            }`}
+          >
+            {/* Drawer Top Header */}
+            <div className="p-4 sm:p-5 border-b border-[#262626] flex items-center justify-between bg-[#121212]">
+              <Link href="/" onClick={() => setMobileMenuOpen(false)} className="inline-block">
+                <span className="font-serif text-lg tracking-[0.2em] text-[#F5F2EC] uppercase font-light">
+                  {settings.brandName}
+                </span>
+              </Link>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                aria-label="Close menu"
+                className="p-1.5 text-[#85817A] hover:text-[#B89A6A] hover:bg-[#1A1A1A] transition-colors rounded-none"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-              {/* Quick Search Bar inside Drawer */}
-              <div className="p-4 border-b border-[#1F1F1F] bg-[#0E0E0E]">
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setSearchOpen(true);
-                  }}
-                  className="w-full flex items-center gap-3 px-3.5 py-2.5 bg-[#161616] border border-[#2B2B27] text-left text-xs text-[#85817A] hover:text-[#F5F2EC] hover:border-[#B89A6A] transition-colors"
-                >
-                  <Search className="w-3.5 h-3.5 text-[#B89A6A]" />
-                  <span className="tracking-wide">Search atelier creations...</span>
-                </button>
-              </div>
+            {/* Quick Search Bar inside Drawer */}
+            <div className="p-3.5 sm:p-4 border-b border-[#1F1F1F] bg-[#0E0E0E]">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setSearchOpen(true);
+                }}
+                className="w-full flex items-center gap-3 px-3.5 py-2.5 bg-[#161616] border border-[#2B2B27] text-left text-xs text-[#85817A] hover:text-[#F5F2EC] hover:border-[#B89A6A] transition-colors"
+              >
+                <Search className="w-3.5 h-3.5 text-[#B89A6A]" />
+                <span className="tracking-wide">Search atelier creations...</span>
+              </button>
+            </div>
 
-              {/* Main Scrollable Nav Links */}
-              <div className="flex-1 overflow-y-auto px-5 py-4 space-y-1">
+            {/* Main Scrollable Nav Links */}
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-1 scroll-touch-contain">
                 {/* Home */}
                 <Link
                   href="/"
@@ -731,7 +767,6 @@ export default function Navbar() {
               </div>
             </div>
           </div>
-        )}
       </header>
 
       {/* Instant Search Modal */}

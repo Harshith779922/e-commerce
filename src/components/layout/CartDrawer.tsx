@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { formatINR } from '@/lib/utils';
@@ -26,7 +26,31 @@ export default function CartDrawer() {
   const [couponInput, setCouponInput] = useState('');
   const [isApplying, setIsApplying] = useState(false);
 
-  if (!isOpen) return null;
+  // Lock body scroll when cart is open
+  useEffect(() => {
+    if (isOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   const freeShippingThreshold = 4999;
   const progressToFreeShipping = Math.min(100, (subtotal / freeShippingThreshold) * 100);
@@ -41,15 +65,26 @@ export default function CartDrawer() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
+    <div
+      className={`fixed inset-0 z-50 overflow-hidden transition-all duration-300 ${
+        isOpen ? 'pointer-events-auto visible' : 'pointer-events-none invisible'
+      }`}
+      aria-hidden={!isOpen}
+    >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-500"
+        className={`fixed inset-0 bg-black/85 backdrop-blur-md drawer-backdrop ${
+          isOpen ? 'opacity-100' : 'opacity-0'
+        }`}
         onClick={closeCart}
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
-        <div className="w-screen max-w-md bg-[#0E0E0E] border-l border-[#34312D] text-[#F5F0E8] flex flex-col shadow-2xl animate-slideLeft">
+        <div
+          className={`w-screen max-w-md bg-[#0E0E0E] border-l border-[#34312D] text-[#F5F2EC] flex flex-col shadow-2xl drawer-right transform ${
+            isOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
           {/* Header */}
           <div className="p-4 sm:p-6 border-b border-[#34312D] flex items-center justify-between">
             <div>
