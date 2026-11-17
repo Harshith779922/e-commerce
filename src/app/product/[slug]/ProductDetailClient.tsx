@@ -53,6 +53,27 @@ export default function ProductDetailClient({
   const [added, setAdded] = useState(false);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [galleryTouchStart, setGalleryTouchStart] = useState<number | null>(null);
+  const [galleryTouchEnd, setGalleryTouchEnd] = useState<number | null>(null);
+
+  const onGalleryTouchStart = (e: React.TouchEvent) => {
+    setGalleryTouchEnd(null);
+    setGalleryTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onGalleryTouchMove = (e: React.TouchEvent) => {
+    setGalleryTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onGalleryTouchEnd = () => {
+    if (!galleryTouchStart || !galleryTouchEnd) return;
+    const distance = galleryTouchStart - galleryTouchEnd;
+    if (distance > 40 && selectedImageIdx < images.length - 1) {
+      setSelectedImageIdx((prev) => prev + 1);
+    } else if (distance < -40 && selectedImageIdx > 0) {
+      setSelectedImageIdx((prev) => prev - 1);
+    }
+  };
 
   // Accordion active state
   const [openAccordions, setOpenAccordions] = useState<{ [key: string]: boolean }>({
@@ -191,8 +212,13 @@ export default function ProductDetailClient({
               </div>
             )}
 
-            {/* Main Stage Image with Zoom Lightbox Trigger */}
-            <div className="relative flex-1 aspect-[3/4] overflow-hidden bg-[#121212] border border-[#2B2B2B] group">
+            {/* Main Stage Image with Zoom Lightbox Trigger & Touch Swipe */}
+            <div
+              onTouchStart={onGalleryTouchStart}
+              onTouchMove={onGalleryTouchMove}
+              onTouchEnd={onGalleryTouchEnd}
+              className="relative flex-1 aspect-[3/4] overflow-hidden bg-[#121212] border border-[#2B2B2B] group select-none"
+            >
               <img
                 src={images[selectedImageIdx]?.url || images[0]?.url}
                 alt={product.name}
@@ -200,16 +226,30 @@ export default function ProductDetailClient({
                 onClick={() => setLightboxOpen(true)}
               />
 
+              {/* Mobile Image Dots */}
+              {images.length > 1 && (
+                <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-full border border-white/10">
+                  {images.map((_, dotIdx) => (
+                    <span
+                      key={dotIdx}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        selectedImageIdx === dotIdx ? 'w-4 bg-[#B89A6A]' : 'w-1.5 bg-white/40'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
+
               <button
                 onClick={() => setLightboxOpen(true)}
                 aria-label="Enlarge view"
-                className="absolute bottom-4 right-4 p-2.5 bg-black/70 hover:bg-black text-[#F5F0E8] hover:text-[#C5A46D] backdrop-blur-sm border border-[#444] transition-colors"
+                className="absolute bottom-4 right-4 p-2.5 bg-black/70 hover:bg-black text-[#F5F2EC] hover:text-[#B89A6A] backdrop-blur-sm border border-[#444] transition-colors"
               >
                 <Maximize2 className="w-4 h-4" />
               </button>
 
               {product.isNewArrival && (
-                <span className="absolute top-4 left-4 bg-[#C5A46D] text-black text-[9px] uppercase tracking-widest font-bold px-3 py-1 shadow-md">
+                <span className="absolute top-4 left-4 bg-[#B89A6A] text-black text-[9px] uppercase tracking-widest font-bold px-3 py-1 shadow-md">
                   New Arrival
                 </span>
               )}
@@ -633,7 +673,7 @@ export default function ProductDetailClient({
       </div>
 
       {/* Mobile Sticky Add to Bag Bar */}
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#111111]/95 backdrop-blur-md border-t border-[#262626] px-4 py-3 flex items-center justify-between gap-3 shadow-2xl">
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#111111]/95 backdrop-blur-md border-t border-[#262626] px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-3 shadow-2xl">
         <div className="flex flex-col min-w-0 pr-2">
           <span className="text-[11px] text-[#F5F0E8] font-serif truncate">{product.name}</span>
           <div className="flex items-center gap-1.5">

@@ -48,40 +48,40 @@ export default function CartDrawer() {
         onClick={closeCart}
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
         <div className="w-screen max-w-md bg-[#0E0E0E] border-l border-[#34312D] text-[#F5F0E8] flex flex-col shadow-2xl animate-slideLeft">
           {/* Header */}
-          <div className="p-6 border-b border-[#34312D] flex items-center justify-between">
+          <div className="p-4 sm:p-6 border-b border-[#34312D] flex items-center justify-between">
             <div>
               <h2 className="font-serif text-lg tracking-widest uppercase">Shopping Bag</h2>
-              <p className="text-[11px] text-[#A8A29A] tracking-wider uppercase mt-0.5">
+              <p className="text-[11px] text-[#85817A] tracking-wider uppercase mt-0.5">
                 {items.length} {items.length === 1 ? 'Creation' : 'Creations'} Selected
               </p>
             </div>
             <button
               onClick={closeCart}
               aria-label="Close bag"
-              className="text-[#A8A29A] hover:text-[#C5A46D] transition-colors p-1"
+              className="text-[#85817A] hover:text-[#B89A6A] transition-colors p-1"
             >
               <X className="w-6 h-6" />
             </button>
           </div>
 
           {/* Free Shipping Progress Indicator */}
-          <div className="bg-[#171717] px-6 py-3 border-b border-[#34312D] text-xs">
+          <div className="bg-[#171717] px-4 sm:px-6 py-3 border-b border-[#34312D] text-xs">
             {remainingForFreeShipping > 0 ? (
-              <p className="text-[11px] text-[#A8A29A]">
-                Add <span className="text-[#C5A46D] font-medium">{formatINR(remainingForFreeShipping)}</span> more to qualify for complimentary white-glove delivery.
+              <p className="text-[11px] text-[#85817A]">
+                Add <span className="text-[#B89A6A] font-medium">{formatINR(remainingForFreeShipping)}</span> more to qualify for complimentary white-glove delivery.
               </p>
             ) : (
-              <p className="text-[11px] text-[#C5A46D] flex items-center gap-1.5 font-medium">
+              <p className="text-[11px] text-[#B89A6A] flex items-center gap-1.5 font-medium">
                 <Sparkles className="w-3.5 h-3.5" />
                 Complimentary white-glove delivery unlocked!
               </p>
             )}
             <div className="w-full bg-[#2A2A2A] h-1.5 mt-2 rounded-full overflow-hidden">
               <div
-                className="bg-gradient-to-r from-[#9A7B4F] to-[#E0C18A] h-full transition-all duration-500"
+                className="bg-gradient-to-r from-[#9A7B4F] to-[#B89A6A] h-full transition-all duration-500"
                 style={{ width: `${progressToFreeShipping}%` }}
               />
             </div>
@@ -225,18 +225,18 @@ export default function CartDrawer() {
                     {shipping === 0 ? <span className="text-[#C5A46D] font-medium">Complimentary</span> : formatINR(shipping)}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm font-serif text-[#F5F0E8] pt-2 border-t border-[#262626] font-medium">
+                <div className="flex justify-between text-sm font-serif text-[#F5F2EC] pt-2 border-t border-[#262626] font-medium">
                   <span>Grand Total</span>
-                  <span className="text-[#C5A46D] font-sans font-bold">{formatINR(total)}</span>
+                  <span className="text-[#B89A6A] font-sans font-bold">{formatINR(total)}</span>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="space-y-2 pt-2">
+              <div className="space-y-2 pt-2 pb-safe">
                 <Link
                   href="/checkout"
                   onClick={closeCart}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-gradient-to-r from-[#9A7B4F] via-[#C5A46D] to-[#E0C18A] text-black font-semibold text-xs tracking-widest uppercase hover:brightness-110 transition-all shadow-luxury"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-gradient-to-r from-[#947A4F] via-[#B89A6A] to-[#CDB388] text-black font-semibold text-xs tracking-widest uppercase hover:brightness-110 transition-all shadow-luxury"
                 >
                   Proceed to Checkout <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -244,14 +244,14 @@ export default function CartDrawer() {
                 <Link
                   href="/cart"
                   onClick={closeCart}
-                  className="w-full block text-center py-2.5 border border-[#34312D] text-[#A8A29A] hover:text-[#F5F0E8] hover:border-[#C5A46D] text-xs tracking-widest uppercase transition-colors"
+                  className="w-full block text-center py-2.5 border border-[#34312D] text-[#85817A] hover:text-[#F5F2EC] hover:border-[#B89A6A] text-xs tracking-widest uppercase transition-colors"
                 >
                   View Full Bag Details
                 </Link>
               </div>
 
               <div className="flex items-center justify-center gap-2 text-[10px] text-[#777] pt-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#C5A46D]" />
+                <ShieldCheck className="w-3.5 h-3.5 text-[#B89A6A]" />
                 <span>256-Bit Encrypted Secure Checkout with Razorpay</span>
               </div>
             </div>

@@ -19,9 +19,14 @@ export default function Navbar() {
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileCategoryOpen, setMobileCategoryOpen] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
+
+  const toggleMobileCategory = (cat: string) => {
+    setMobileCategoryOpen((prev) => (prev === cat ? null : cat));
+  };
 
   // Scroll detection
   useEffect(() => {
@@ -380,88 +385,349 @@ export default function Navbar() {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="fixed inset-0 z-50 lg:hidden animate-fadeIn">
             <div
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+              className="fixed inset-0 bg-black/85 backdrop-blur-md transition-opacity duration-300"
               onClick={() => setMobileMenuOpen(false)}
             />
-            <div className="fixed top-0 bottom-0 left-0 w-4/5 max-w-sm bg-[#111111] border-r border-[#262626] p-6 flex flex-col justify-between overflow-y-auto">
-              <div>
-                <div className="flex items-center justify-between border-b border-[#262626] pb-4 mb-6">
-                  <span className="font-serif text-lg tracking-[0.2em] text-[#F5F2EC] uppercase">
+            <div className="fixed top-0 bottom-0 left-0 w-[88vw] max-w-sm bg-[#0E0E0E] border-r border-[#262626] flex flex-col justify-between shadow-2xl z-10 overflow-hidden">
+              {/* Drawer Top Header */}
+              <div className="p-5 border-b border-[#262626] flex items-center justify-between bg-[#121212]">
+                <Link href="/" onClick={() => setMobileMenuOpen(false)} className="inline-block">
+                  <span className="font-serif text-lg tracking-[0.2em] text-[#F5F2EC] uppercase font-light">
                     {settings.brandName}
                   </span>
-                  <button
-                    onClick={() => setMobileMenuOpen(false)}
-                    aria-label="Close menu"
-                    className="text-[#85817A] hover:text-[#B89A6A]"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-
-                <nav className="space-y-4 text-xs tracking-widestLuxury uppercase font-medium">
-                  <Link href="/" className="block py-2 text-[#F5F2EC] hover:text-[#B89A6A] border-b border-[#1C1C1C]">
-                    Home
-                  </Link>
-                  <Link href="/men" className="block py-2 text-[#F5F2EC] hover:text-[#B89A6A] border-b border-[#1C1C1C]">
-                    Men’s Collection
-                  </Link>
-                  <Link href="/women" className="block py-2 text-[#F5F2EC] hover:text-[#B89A6A] border-b border-[#1C1C1C]">
-                    Women’s Collection
-                  </Link>
-                  <Link href="/accessories" className="block py-2 text-[#F5F2EC] hover:text-[#B89A6A] border-b border-[#1C1C1C]">
-                    Accessories & Leather
-                  </Link>
-                  <Link href="/collections/the-signature-collection" className="block py-2 text-[#B89A6A] border-b border-[#1C1C1C]">
-                    The Signature Collection
-                  </Link>
-                  <Link href="/shop?newArrival=true" className="block py-2 text-[#F5F2EC] hover:text-[#B89A6A] border-b border-[#1C1C1C]">
-                    New Arrivals
-                  </Link>
-                  <Link href="/shop" className="block py-2 text-[#85817A] hover:text-[#F5F2EC]">
-                    Complete Catalogue
-                  </Link>
-                </nav>
+                </Link>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  aria-label="Close menu"
+                  className="p-1.5 text-[#85817A] hover:text-[#B89A6A] hover:bg-[#1A1A1A] transition-colors rounded-none"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
 
-              <div className="pt-6 border-t border-[#262626]">
-                {user ? (
-                  <div className="space-y-3">
-                    <p className="text-xs text-[#85817A]">
-                      Signed in as <span className="text-[#F5F2EC] font-medium">{user.name}</span>
-                    </p>
-                    <Link
-                      href="/account"
-                      className="block text-center py-2 px-4 border border-[#B89A6A] text-[#B89A6A] text-xs uppercase tracking-widest hover:bg-[#B89A6A] hover:text-black transition-colors"
-                    >
-                      Client Account
-                    </Link>
-                    {user.role === 'ADMIN' && (
+              {/* Quick Search Bar inside Drawer */}
+              <div className="p-4 border-b border-[#1F1F1F] bg-[#0E0E0E]">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setSearchOpen(true);
+                  }}
+                  className="w-full flex items-center gap-3 px-3.5 py-2.5 bg-[#161616] border border-[#2B2B27] text-left text-xs text-[#85817A] hover:text-[#F5F2EC] hover:border-[#B89A6A] transition-colors"
+                >
+                  <Search className="w-3.5 h-3.5 text-[#B89A6A]" />
+                  <span className="tracking-wide">Search atelier creations...</span>
+                </button>
+              </div>
+
+              {/* Main Scrollable Nav Links */}
+              <div className="flex-1 overflow-y-auto px-5 py-4 space-y-1">
+                {/* Home */}
+                <Link
+                  href="/"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`block py-3 text-xs tracking-widestLuxury uppercase font-medium border-b border-[#1A1A1A] transition-colors ${
+                    pathname === '/' ? 'text-[#B89A6A]' : 'text-[#F5F2EC] hover:text-[#B89A6A]'
+                  }`}
+                >
+                  Home
+                </Link>
+
+                {/* Men Accordion */}
+                <div className="border-b border-[#1A1A1A]">
+                  <button
+                    onClick={() => toggleMobileCategory('men')}
+                    className="w-full flex items-center justify-between py-3 text-xs tracking-widestLuxury uppercase font-medium text-[#F5F2EC] hover:text-[#B89A6A] transition-colors"
+                  >
+                    <span>Men’s Wardrobe</span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-[#85817A] transition-transform duration-300 ${
+                        mobileCategoryOpen === 'men' ? 'rotate-180 text-[#B89A6A]' : ''
+                      }`}
+                    />
+                  </button>
+                  {mobileCategoryOpen === 'men' && (
+                    <div className="pl-4 pb-3 space-y-2.5 text-[11px] text-[#85817A] animate-fadeIn">
                       <Link
-                        href="/admin"
-                        className="block text-center py-2 px-4 bg-[#B89A6A] text-black text-xs uppercase tracking-widest font-semibold"
+                        href="/men"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-[#B89A6A] font-medium tracking-wider uppercase py-0.5"
                       >
-                        Admin Dashboard
+                        Explore All Men →
                       </Link>
-                    )}
+                      <Link
+                        href="/shop?category=suits-blazers&gender=men"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block hover:text-[#F5F2EC] py-0.5"
+                      >
+                        Evening Tuxedos & Blazers
+                      </Link>
+                      <Link
+                        href="/shop?category=designer-shirts&gender=men"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block hover:text-[#F5F2EC] py-0.5"
+                      >
+                        Egyptian Giza Cotton Shirts
+                      </Link>
+                      <Link
+                        href="/shop?category=trousers-footwear&gender=men"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block hover:text-[#F5F2EC] py-0.5"
+                      >
+                        Pleated Trousers & Footwear
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                {/* Women Accordion */}
+                <div className="border-b border-[#1A1A1A]">
+                  <button
+                    onClick={() => toggleMobileCategory('women')}
+                    className="w-full flex items-center justify-between py-3 text-xs tracking-widestLuxury uppercase font-medium text-[#F5F2EC] hover:text-[#B89A6A] transition-colors"
+                  >
+                    <span>Women’s Wardrobe</span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-[#85817A] transition-transform duration-300 ${
+                        mobileCategoryOpen === 'women' ? 'rotate-180 text-[#B89A6A]' : ''
+                      }`}
+                    />
+                  </button>
+                  {mobileCategoryOpen === 'women' && (
+                    <div className="pl-4 pb-3 space-y-2.5 text-[11px] text-[#85817A] animate-fadeIn">
+                      <Link
+                        href="/women"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-[#B89A6A] font-medium tracking-wider uppercase py-0.5"
+                      >
+                        Explore All Women →
+                      </Link>
+                      <Link
+                        href="/shop?category=dresses-eveningwear&gender=women"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block hover:text-[#F5F2EC] py-0.5"
+                      >
+                        Silk Crepe Column Gowns
+                      </Link>
+                      <Link
+                        href="/shop?category=suits-blazers&gender=women"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block hover:text-[#F5F2EC] py-0.5"
+                      >
+                        Hourglass Filigree Blazers
+                      </Link>
+                      <Link
+                        href="/shop?category=designer-shirts&gender=women"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block hover:text-[#F5F2EC] py-0.5"
+                      >
+                        Silk Georgette Blouses
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                {/* Collections Accordion */}
+                <div className="border-b border-[#1A1A1A]">
+                  <button
+                    onClick={() => toggleMobileCategory('collections')}
+                    className="w-full flex items-center justify-between py-3 text-xs tracking-widestLuxury uppercase font-medium text-[#F5F2EC] hover:text-[#B89A6A] transition-colors"
+                  >
+                    <span>Atelier Collections</span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-[#85817A] transition-transform duration-300 ${
+                        mobileCategoryOpen === 'collections' ? 'rotate-180 text-[#B89A6A]' : ''
+                      }`}
+                    />
+                  </button>
+                  {mobileCategoryOpen === 'collections' && (
+                    <div className="pl-4 pb-3 space-y-2.5 text-[11px] text-[#85817A] animate-fadeIn">
+                      <Link
+                        href="/collections/the-signature-collection"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-[#B89A6A] font-medium py-0.5 flex items-center justify-between"
+                      >
+                        <span>The Signature Collection</span>
+                        <span className="text-[9px] px-1.5 py-0.5 bg-[#B89A6A]/10 border border-[#B89A6A]/30 uppercase font-mono">
+                          Campaign
+                        </span>
+                      </Link>
+                      <Link
+                        href="/collections/the-italian-collection"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block hover:text-[#F5F2EC] py-0.5"
+                      >
+                        The Italian Collection
+                      </Link>
+                      <Link
+                        href="/collections/the-dolce-collection"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block hover:text-[#F5F2EC] py-0.5"
+                      >
+                        The Dolce Collection
+                      </Link>
+                      <Link
+                        href="/collections/sartoriale-silk-cashmere"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block hover:text-[#F5F2EC] py-0.5"
+                      >
+                        Silk & Cashmere Knitwear
+                      </Link>
+                      <Link
+                        href="/collections/alta-notte-evening"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block hover:text-[#F5F2EC] py-0.5"
+                      >
+                        Alta Notte Gala Evening
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                {/* Accessories Accordion */}
+                <div className="border-b border-[#1A1A1A]">
+                  <button
+                    onClick={() => toggleMobileCategory('accessories')}
+                    className="w-full flex items-center justify-between py-3 text-xs tracking-widestLuxury uppercase font-medium text-[#F5F2EC] hover:text-[#B89A6A] transition-colors"
+                  >
+                    <span>Accessories & Leather</span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-[#85817A] transition-transform duration-300 ${
+                        mobileCategoryOpen === 'accessories' ? 'rotate-180 text-[#B89A6A]' : ''
+                      }`}
+                    />
+                  </button>
+                  {mobileCategoryOpen === 'accessories' && (
+                    <div className="pl-4 pb-3 space-y-2.5 text-[11px] text-[#85817A] animate-fadeIn">
+                      <Link
+                        href="/accessories"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-[#B89A6A] font-medium tracking-wider uppercase py-0.5"
+                      >
+                        All Accessories →
+                      </Link>
+                      <Link
+                        href="/shop?category=bags-travel"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block hover:text-[#F5F2EC] py-0.5"
+                      >
+                        Tuscan Calfskin Bags & Duffels
+                      </Link>
+                      <Link
+                        href="/shop?category=accessories"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block hover:text-[#F5F2EC] py-0.5"
+                      >
+                        Silk Twill Pocket Squares & Cufflinks
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                {/* New Arrivals direct link */}
+                <Link
+                  href="/shop?newArrival=true"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between py-3 text-xs tracking-widestLuxury uppercase font-medium text-[#F5F2EC] hover:text-[#B89A6A] border-b border-[#1A1A1A]"
+                >
+                  <span>New Arrivals</span>
+                  <span className="w-2 h-2 rounded-full bg-[#B89A6A]" />
+                </Link>
+
+                {/* Complete Shop */}
+                <Link
+                  href="/shop"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-3 text-xs tracking-widestLuxury uppercase font-medium text-[#85817A] hover:text-[#F5F2EC] border-b border-[#1A1A1A]"
+                >
+                  Complete Catalogue
+                </Link>
+
+                {/* Quick Account Links Row */}
+                <div className="pt-3 grid grid-cols-2 gap-2 text-xs">
+                  <Link
+                    href="/account?tab=wishlist"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 p-2.5 bg-[#141414] border border-[#262626] text-[#F5F2EC] hover:text-[#B89A6A] transition-colors"
+                  >
+                    <Heart className="w-3.5 h-3.5 text-[#B89A6A]" />
+                    <span className="text-[11px] uppercase tracking-wider">Wishlist ({wishlistIds.length})</span>
+                  </Link>
+
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openCart();
+                    }}
+                    className="flex items-center gap-2 p-2.5 bg-[#141414] border border-[#262626] text-[#F5F2EC] hover:text-[#B89A6A] transition-colors text-left"
+                  >
+                    <ShoppingBag className="w-3.5 h-3.5 text-[#B89A6A]" />
+                    <span className="text-[11px] uppercase tracking-wider">Bag ({itemCount})</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Drawer Footer: Client Authentication / Concierge */}
+              <div className="p-5 border-t border-[#262626] bg-[#121212] space-y-3">
+                {user ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs text-[#85817A]">
+                      <span>Client Account</span>
+                      <span className="text-[#F5F2EC] font-medium">{user.name}</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Link
+                        href="/account"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-center py-2.5 px-3 border border-[#B89A6A] text-[#B89A6A] text-[10px] uppercase tracking-widest font-medium hover:bg-[#B89A6A] hover:text-black transition-colors"
+                      >
+                        My Orders
+                      </Link>
+                      {user.role === 'ADMIN' ? (
+                        <Link
+                          href="/admin"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="block text-center py-2.5 px-3 bg-[#B89A6A] text-black text-[10px] uppercase tracking-widest font-semibold"
+                        >
+                          Admin
+                        </Link>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            logout();
+                            setMobileMenuOpen(false);
+                          }}
+                          className="block text-center py-2.5 px-3 border border-[#2B2B27] text-[#85817A] text-[10px] uppercase tracking-widest hover:text-[#F5F2EC]"
+                        >
+                          Sign Out
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2">
                     <Link
                       href="/auth/login"
-                      className="block text-center py-2 border border-[#2B2B27] text-[#F5F2EC] text-xs uppercase tracking-widest hover:border-[#B89A6A]"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block text-center py-2.5 border border-[#2B2B27] text-[#F5F2EC] text-[11px] uppercase tracking-widest hover:border-[#B89A6A] transition-colors"
                     >
                       Sign In
                     </Link>
                     <Link
                       href="/auth/register"
-                      className="block text-center py-2 bg-[#B89A6A] text-black text-xs uppercase tracking-widest font-medium hover:bg-[#CDB388]"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block text-center py-2.5 bg-[#B89A6A] text-black text-[11px] uppercase tracking-widest font-medium hover:bg-[#CDB388] transition-colors"
                     >
                       Register
                     </Link>
                   </div>
                 )}
+
+                <div className="flex items-center justify-between pt-2 border-t border-[#1F1F1F] text-[10px] text-[#85817A]">
+                  <span>Atelier Milano • Curated in Italy</span>
+                  <span className="font-mono text-[#B89A6A]">INR (₹)</span>
+                </div>
               </div>
             </div>
           </div>

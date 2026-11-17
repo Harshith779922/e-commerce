@@ -46,13 +46,13 @@ export default function ShopByCategory() {
           <div className="w-12 h-[1px] bg-[#B89A6A] mx-auto mt-4" />
         </div>
 
-        {/* 4 Large Editorial Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* 4 Large Editorial Cards: 2 Columns on Mobile, 4 Columns on Desktop */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {categories.map((cat, idx) => (
             <Link
               key={idx}
               href={`/shop?category=${cat.slug}`}
-              className="group relative h-[480px] sm:h-[520px] overflow-hidden border border-[#2B2B27] hover:border-[#B89A6A] transition-all duration-500 block"
+              className="group relative h-[270px] sm:h-[420px] lg:h-[500px] overflow-hidden border border-[#2B2B27] hover:border-[#B89A6A] transition-all duration-500 block"
             >
               {/* Background Image with Zoom */}
               <div
@@ -61,23 +61,23 @@ export default function ShopByCategory() {
               />
 
               {/* Dark Gradient Overlay for text readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
 
               {/* Editorial Category Content */}
-              <div className="absolute inset-0 p-6 flex flex-col justify-end text-left">
-                <span className="text-[10px] font-mono tracking-widest text-[#B89A6A] uppercase mb-1">
-                  Category 0{idx + 1}
+              <div className="absolute inset-0 p-3.5 sm:p-6 flex flex-col justify-end text-left">
+                <span className="text-[9px] sm:text-[10px] font-mono tracking-widest text-[#B89A6A] uppercase mb-0.5 sm:mb-1">
+                  0{idx + 1}
                 </span>
-                <h3 className="font-serif text-xl sm:text-2xl text-[#F5F2EC] uppercase tracking-wide mb-1 group-hover:text-[#B89A6A] transition-colors">
+                <h3 className="font-serif text-sm sm:text-2xl text-[#F5F2EC] uppercase tracking-wide mb-1 group-hover:text-[#B89A6A] transition-colors leading-snug line-clamp-1">
                   {cat.name}
                 </h3>
-                <p className="text-xs text-[#85817A] font-light mb-4">
+                <p className="text-[10px] sm:text-xs text-[#85817A] font-light mb-2 sm:mb-4 line-clamp-1">
                   {cat.subtitle}
                 </p>
 
                 {/* SHOP NOW Button link */}
-                <div className="inline-flex items-center gap-2 text-xs tracking-widestLuxury text-[#F5F2EC] group-hover:text-[#B89A6A] uppercase font-medium border-b border-transparent group-hover:border-[#B89A6A] pb-1 w-max transition-all">
-                  Shop Now <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs tracking-widestLuxury text-[#F5F2EC] group-hover:text-[#B89A6A] uppercase font-medium border-b border-transparent group-hover:border-[#B89A6A] pb-0.5 w-max transition-all">
+                  Shop <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </Link>

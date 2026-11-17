@@ -54,6 +54,8 @@ const slides: Slide[] = [
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   // Auto advance slides every 7 seconds
   useEffect(() => {
@@ -66,10 +68,39 @@ export default function HeroSection() {
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
 
+  // Touch Swipe Handlers for smooth mobile gestures
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+  };
+
   const active = slides[currentSlide];
 
   return (
-    <section className="relative w-full h-[88vh] min-h-[580px] max-h-[920px] overflow-hidden bg-[#111111]">
+    <section
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      className="relative w-full h-[84vh] min-h-[520px] max-h-[920px] overflow-hidden bg-[#111111] select-none"
+    >
       {/* Background Slides */}
       {slides.map((slide, index) => (
         <div
@@ -104,20 +135,20 @@ export default function HeroSection() {
           </div>
 
           {/* Main Title */}
-          <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-light text-[#F5F2EC] tracking-wide leading-[1.12] uppercase">
+          <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-light text-[#F5F2EC] tracking-wide leading-[1.15] sm:leading-[1.12] uppercase">
             {active.mainTitle}
           </h1>
 
           {/* Subtitle */}
-          <p className="text-xs sm:text-sm text-[#A8A29A] font-light max-w-lg leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#A8A29A] font-light max-w-lg leading-relaxed line-clamp-3 sm:line-clamp-none">
             {active.subtitle}
           </p>
 
           {/* Buttons: EXPLORE MEN & EXPLORE WOMEN */}
-          <div className="pt-2 flex flex-wrap gap-4">
+          <div className="pt-2 flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
             <Link
               href={active.ctaPrimaryLink}
-              className="px-8 py-3.5 bg-gradient-to-r from-[#947A4F] via-[#B89A6A] to-[#CDB388] text-black font-sans text-xs tracking-widestLuxury uppercase font-semibold hover:brightness-110 transition-all shadow-luxury flex items-center gap-2 group"
+              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#947A4F] via-[#B89A6A] to-[#CDB388] text-black font-sans text-xs tracking-widestLuxury uppercase font-semibold hover:brightness-110 transition-all shadow-luxury flex items-center justify-center gap-2 group"
             >
               {active.ctaPrimaryText}
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -125,7 +156,7 @@ export default function HeroSection() {
 
             <Link
               href={active.ctaSecondaryLink}
-              className="px-8 py-3.5 border border-[#34312D] hover:border-[#B89A6A] text-[#F5F2EC] hover:text-[#B89A6A] font-sans text-xs tracking-widestLuxury uppercase transition-all backdrop-blur-sm bg-black/40 font-medium"
+              className="w-full sm:w-auto px-8 py-3.5 border border-[#34312D] hover:border-[#B89A6A] text-[#F5F2EC] hover:text-[#B89A6A] font-sans text-xs tracking-widestLuxury uppercase transition-all backdrop-blur-sm bg-black/40 font-medium text-center"
             >
               {active.ctaSecondaryText}
             </Link>
